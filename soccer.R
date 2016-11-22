@@ -18,9 +18,18 @@ player_attr = dbGetQuery( soccer, 'select * from Player_Attributes' )
 teams = dbGetQuery( soccer, 'select * from Team' )
 team_attr = dbGetQuery( soccer, 'select * from Team_Attributes' )
 
+#select only variables we care about
 match_variables = c("id", "country_id", "league_id", "season", "stage", "date", "match_api_id", "home_team_api_id", 
                     "away_team_api_id",  "home_team_goal", "away_team_goal", "B365H", "B365D", "B365A")
-
 match_subset <- subset(matches, select = match_variables)
 
-spain <- subset(matches, country_id = 21518)
+#just take Spain matches for now
+spain_matches <- match_subset[match_subset$country_id == 21518, ]
+
+# Merge in long team name for better understanding
+home <- subset(teams, select = c("team_api_id", "team_long_name"))
+colnames(home) <- c( "home_team_api_id", " home_team_long_name")
+away <- subset(teams, select = c("team_api_id", "team_long_name"))
+colnames(away) <- c( "away_team_api_id", "away_team_long_name")
+spain1 <- merge(spain_matches, home)
+spain <- merge(spain1, away)
