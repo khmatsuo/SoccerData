@@ -26,10 +26,12 @@ match_subset <- subset(matches, select = match_variables)
 #just take Spain matches for now
 spain_matches <- match_subset[match_subset$country_id == 21518, ]
 
-# Merge in long team name for better understanding
+# Merge in long team name for better understanding, reorder variables
 home <- subset(teams, select = c("team_api_id", "team_long_name"))
 colnames(home) <- c( "home_team_api_id", " home_team_long_name")
 away <- subset(teams, select = c("team_api_id", "team_long_name"))
 colnames(away) <- c( "away_team_api_id", "away_team_long_name")
 spain1 <- merge(spain_matches, home)
 spain <- merge(spain1, away)
+spain <- spain[c(2,15,1,16,3:14)]
+spain <- spain[order(spain$home_team_api_id, spain$away_team_api_id),]
