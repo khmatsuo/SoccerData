@@ -1,0 +1,245 @@
+
+
+
+%SUMS Template for assignments.-2013
+\documentclass[letterpaper, 11pt]{article}
+\usepackage{amsmath, amssymb, amsfonts}%math
+\usepackage{mathtools}
+\usepackage[left=1.0in,right=1.0in]{geometry}%margins
+\usepackage{setspace}%change space settings
+\usepackage[utf8x]{inputenc}%ASCII characters
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}%for accentuated characters and accents
+\usepackage{graphicx}%inserting pdf-jpg pictures
+\usepackage{enumerate}%changing enumerate
+\usepackage[natural, dvipsnames, pdftex]{xcolor}
+\usepackage{tikz} %Drawing pretty pictures
+\usepackage{verbatim} %adding code
+\setlength{\parindent}{0pt}%No spacing at beginning of paragraph
+\usepackage[pdftex,  colorlinks=true]{hyperref}%Hyperlinks, with \href
+\hypersetup{urlcolor=RoyalBlue,  linkcolor=RedOrange,  citecolor=black}
+%Playing around with formatting- ex with section
+%\titleformat{\section}[block]{\sffamily}
+%{\color{Blue} \centering \Large Chapter \thesection}{0pt}{\linebreak
+%\color{Blue} \Large \centering}
+
+
+%\usepackage{makeidx}
+\DeclareMathAlphabet{\mathpzc}{OT1}{pzc}{m}{n} %mathpzc alphabet
+\usepackage[mathscr]{eucal} %mathscr alphabet
+
+%-------------Additional material
+%Change section headings
+\usepackage[calcwidth,  sc,  medium,  center,  compact]{titlesec}
+%Redefine theorem environments
+\usepackage[amsmath,  thref,  thmmarks,  hyperref]{ntheorem}
+
+%Redefining theorem style
+
+\theoremstyle{break}
+\theoremheaderfont{\bf}
+\theorembodyfont{\normalfont}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{cor}[theorem]{Corollary}
+\newtheorem{prop}[theorem]{Proposition}
+\newtheorem*{claim}{Claim}
+\newtheorem*{sol}{Solution}
+\newtheorem{defn}[theorem]{Definition}
+\newtheorem{ex}{Example}[section]
+\newtheorem*{remark}{Remark}[section]
+\newtheorem*{obs}{Observation}[section]
+\newtheorem*{note}{Note}[section]
+\renewcommand{\Box}{\rule{1. 5ex}{1.5ex}}  % end of proof
+\newenvironment*{proof}{\par\noindent{\normalfont{\bf{Proof.
+			}}}}{\hfill \small$\blacksquare$\\[2mm]}
+			
+			
+			
+			%Counter for equations according to section: 1.2 vs
+			%\renewcommand{\theequation}{\thesection.\arabic{equation}}
+			
+			%Some examples of new commands
+			%To define your commands, use \newcommand or \renewcommand if it already exist
+			\renewcommand{\emph}[1]{\textbf{#1}}
+			\newcommand{\R}{\mathbb{R}} 
+			\newcommand{\E}[1]{{\mathrm E}\left(#1\right)}
+			\newcommand{\bs}[1]{\boldsymbol {#1}}
+			\newcommand{\Ra}{\Rightarrow}
+			\newcommand{\limni}{\lim_{n \ra \infty}}
+			\renewcommand{\iff}{\Leftrightarrow}
+			\newcommand{\all}{ \; \forall \;}
+			\newcommand{\eps}{\varepsilon}
+			\newcommand{\I}[1]{{\mathbf 1}_{(#1)}}
+			\newcommand{\Perp}{\perp \! \! \! \perp}
+			
+			
+			\relpenalty=9999 %Penalty for widow and orphan
+			\binoppenalty=9999
+			\usepackage{verbments}%fancy verbatim
+			\usepackage{enumerate}%allow to change the spacing of enumerate
+			\usepackage[shortlabels]{enumitem}
+			\setlist{nolistsep,leftmargin=0.1cm,itemindent=0.4cm}
+			
+			\allowdisplaybreaks
+			\newcommand{\createHeader}[4]{
+				\framebox{
+					\begin{minipage}{0.5\textwidth}
+						\begin{flushleft}
+							Pr. #1 \\ \textsf{#2} - MATH #3
+						\end{flushleft}
+					\end{minipage}
+					\begin{minipage}{0.49\textwidth}
+						\begin{flushright} 
+							Name, Student ID\\
+							Assignment #4
+						\end{flushright}
+					\end{minipage}
+				}\linebreak
+			}
+			\title{653 Term Project \\ Predict Soccer Games Outcome}
+			\begin{document}
+				
+				\maketitle{}
+				
+				
+				The goal of our project is to generate a dummy predictive model capable to give out the probability of outcomes for soccer games in european leagues. In order to do so we found a large data set of previous games (from 2008 to 2016) for each league, along with the overall tactical attributes of teams, the skills of the players on each team (taken from the well known EA SPORTS FIFA 2016 game) and finally the odds made by bookmakers for all games. \\\\
+				
+				It is important to note here that each team will face each other twice a season (typically running from August to May of the following solar year), this added to the fact that most player transfers occur during the summer we can base most of our prediction on the previous game played within a given season and the current form of each team. As building confidence plays a major role in team sports, teams will tend to have good/bad streaks. Our hope is that given the past confrontation between each team, along with the current form of the team (results over the past 5 games), bookeys betting odds, players available on that day, overall tactics matchup and taking in account home side advantage, we will be able to generate a model giving somewhat accurately the probability of outcomes of each past game (and we can simply check if our best bet matches the outcome of that specific game).\\
+				
+				Due to the possibility of 3 outcomes for each game (home wins, draw, away wins) we will use a multinomial logistic regression to get the probability of each outcome setting "home victory" as the reference group (for simplicity due to the advantages that the home team carries). We first must attribute a score to each possible outcoume, we thus specify the following scoring model : 
+				
+				\begin{align*}
+				Score (X_i, k) = X_i' * \beta_k
+				\end{align*}
+				
+				
+				which is the score associated with assigning game i to oucome k (home win = 0, draw = 1, away win = 2 is simplyt a categorical variable).
+				
+				We will be running a simple binary logistic regression around a pivot value (as mentinonned previously home victory) : 
+				
+				\begin{align*}
+				ln \Big( \frac{P(Y_i = 1)}{P(Y_i = 0)} \Big) = X_i' * \beta_1 \\
+				ln \Big( \frac{P(Y_i = 2)}{P(Y_i = 0)} \Big) = X_i' * \beta_2
+				\end{align*}
+				
+				
+				Solving will yield :
+				\begin{align*}
+				P(Y_i = 1) = P(Y_i = 0) * exp (X_i' * \beta_1) \\
+				P(Y_i = 2) = P(Y_i = 0) * exp (X_i' * \beta_2)
+				\end{align*}
+				
+				
+				As these outcome probabilities must sum to 1 we therefore have :
+				\begin{align*}
+				P(Y_i = 0) = 1/(1 + \sum(exp(X_i' * \beta_k)) )
+				\end{align*}
+				
+				
+				giving :
+				\begin{align*}
+				P (Y_i = j) = X_i' * \beta_j / (1 + \sum(exp(X_i' * \beta_k)) )
+				\end{align*}
+				 For all other outcomes. \\
+				 
+				In order to be more within of the class we will also use random effects (which moreover play a large part in sports due to various factors). We will start with a simple normally distributed random effect using the match ID, later we might incorporate more accurate random effects such as overall strategies/philosophy of play as random effects. \\
+				In order to achieve this we decided to use glmmPQL() function in R. As mentioned in class this function enables the use of random effects in a generalized linear model setting. 
+				We thus run to separate models (draws vs home wins and away wins vs home wins) in order to generate our sets of $\beta$. Once this done we are able to backtrack probabilities of each outcome using the above equations. \\
+				
+				It is important to note that team sports are in a very broad fashion very unpredictable and even bookies tend to not have very high rates of good decisions. Our goal is to achieve a 60 percent success rate in our decisions. Note that here for simplicity we automatically pick the most probable outcome given by our model, but that in general we will get a lot of games where several outcomes will have very similar probabilities and thus are risky decision. Therefore one could think of integrating a safety net for decisions (eg : only make a decision if the proabability of a given outcome is superior to 0.7).\\
+				
+				A general framework for predictive modeling is based on machine learning, unfortunately we do not know anything about it and thus achieving high success rate for predicting future games will be difficult in this setting. Nonetheless this simple model can help one to make decisions based on past history. \\\\ 
+				
+				We start our study with a simple inference model using only the current form of each team (over the past 5 games) in the spanish league only to build some intuition before taking in account the 5 principle leagues of the old continent (note that each league has it's own type of play and that therefore it might make more sense to make a model for each league).\\
+				
+				\begin{align*}
+				ln \Big( \frac{P(Y_i = 1)}{P(Y_i = 0)} \Big) = \beta_{01} + \beta_{11}*HomeForm_i + \beta_{21}*AwayForm_i + b_{1i} \\
+				ln \Big( \frac{P(Y_i = 2)}{P(Y_i = 0)} \Big) = \beta_{02} + \beta_{12}*HomeForm_i + \beta_{22}*AwayForm_i + b_{2i}				
+				\end{align*}
+				
+				\begin{verbatim}
+				> draw_fit <- glmmPQL(outcome ~ cur_form_home + cur_form_away, random = ~ 1 | match_api_id, family = binomial, data= draws)
+				iteration 1
+				iteration 2
+				iteration 3
+				iteration 4
+				iteration 5
+				iteration 6
+				iteration 7
+				iteration 8
+				iteration 9
+				iteration 10
+				> summary(draw_fit)
+				Linear mixed-effects model fit by maximum likelihood
+				Data: draws 
+				AIC BIC logLik
+				NA  NA     NA
+				
+				Random effects:
+				Formula: ~1 | match_api_id
+				(Intercept)     Residual
+				StdDev:    9.609236 3.935307e-06
+				
+				Variance function:
+				Structure: fixed weights
+				Formula: ~invwt 
+				Fixed effects: outcome ~ cur_form_home + cur_form_away 
+				Value Std.Error   DF   t-value p-value
+				(Intercept)   -3.053780 0.5863318 2186 -5.208279       0
+				cur_form_home -2.015515 0.2835791 2186 -7.107418       0
+				cur_form_away  1.424563 0.3091931 2186  4.607357       0
+				Correlation: 
+				(Intr) cr_frm_h
+				cur_form_home -0.627         
+				cur_form_away -0.661 -0.054  
+				
+				Standardized Within-Group Residuals:
+				Min            Q1           Med            Q3           Max 
+				-5.038130e-05 -3.637352e-05 -3.074693e-05  5.475693e-05  8.848814e-05 
+				
+				Number of Observations: 2189
+				Number of Groups: 2189 
+				> away_fit <- glmmPQL(as.factor(outcome) ~ cur_form_home + cur_form_away, random = ~ 1 | match_api_id, family = binomial, data = away)
+				iteration 1
+				> summary(away_fit)
+				Linear mixed-effects model fit by maximum likelihood
+				Data: away 
+				AIC BIC logLik
+				NA  NA     NA
+				
+				Random effects:
+				Formula: ~1 | match_api_id
+				(Intercept) Residual
+				StdDev: 0.002349906 1.000151
+				
+				Variance function:
+				Structure: fixed weights
+				Formula: ~invwt 
+				Fixed effects: as.factor(outcome) ~ cur_form_home + cur_form_away 
+				Value  Std.Error   DF   t-value p-value
+				(Intercept)   -0.9349400 0.12997126 2333 -7.193436       0
+				cur_form_home -0.5315008 0.06570806 2333 -8.088823       0
+				cur_form_away  0.7439502 0.06549337 2333 11.359167       0
+				Correlation: 
+				(Intr) cr_frm_h
+				cur_form_home -0.572         
+				cur_form_away -0.679 -0.106  
+				
+				Standardized Within-Group Residuals:
+				Min         Q1        Med         Q3        Max 
+				-1.9122933 -0.7426075 -0.5313012  1.0321900  3.5415704 
+				
+				Number of Observations: 2336
+				Number of Groups: 2336
+				\end{verbatim}
+				
+
+				Note that all coefficients are found to be significant here. We then as explained previously explained backtrack to find the probabilities of interest. Based on these, picking the most likely outcome results in a 51 percent success rate to the real outcome. It might be worth noting here that using a plain generalized linear model without the random effects gives out a similar success rate (with different coefficients however).
+
+			\end{document}
+
+
+
+
